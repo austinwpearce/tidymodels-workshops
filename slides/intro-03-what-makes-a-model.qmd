@@ -83,8 +83,7 @@ taxi_test <- testing(taxi_split)
 logistic_reg()
 ```
 
-
-:::notes
+::: notes
 Models have default engines
 :::
 
@@ -130,14 +129,13 @@ logistic_reg() %>%
 :::
 :::
 
-
 ## To specify a model `r hexes("parsnip")`
 
 ```{r decision-tree}
 decision_tree()
 ```
 
-:::notes
+::: notes
 Some models have a default mode
 :::
 
@@ -153,7 +151,7 @@ decision_tree() %>%
 <br></br>
 
 ::: r-fit-text
-All available models are listed at <https://www.tidymodels.org/find/parsnip/> 
+All available models are listed at <https://www.tidymodels.org/find/parsnip/>
 :::
 
 ##  {background-iframe="https://www.tidymodels.org/find/parsnip/"}
@@ -196,11 +194,10 @@ All available models are listed at <https://www.tidymodels.org/find/parsnip/>
 countdown::countdown(minutes = 5, id = "explore-tree-spec")
 ```
 
-
 ## Models we'll be using today
 
-* Logistic regression
-* Decision trees
+-   Logistic regression
+-   Decision trees
 
 ```{r sim-model-viz}
 #| echo: false
@@ -285,13 +282,11 @@ plot_rates +
 :::
 
 ::: {.column width="40%"}
-
 -   Logit of outcome probability modeled as linear combination of predictors:
 
 $log(\frac{p}{1 - p}) = \beta_0 + \beta_1\cdot \text{A}$
 
 -   Find a sigmoid line that separates the two classes
-
 :::
 :::
 
@@ -321,7 +316,6 @@ tree_fit %>%
   extract_fit_engine() %>%
   rpart.plot(roundint = FALSE)
 ```
-
 :::
 
 ::: {.column width="50%"}
@@ -388,6 +382,7 @@ plot_rates +
 ::: columns
 ::: {.column width="50%"}
 ### Logistic regression
+
 ```{r plot-logistic-reg-3}
 #| echo: false
 #| fig.width: 7
@@ -400,6 +395,7 @@ plot_rates +
 
 ::: {.column width="50%"}
 ### Decision trees
+
 ```{r plot-tree-preds-2}
 #| echo: false
 #| fig.width: 7
@@ -422,10 +418,9 @@ plot_rates +
 knitr::include_graphics("images/good_workflow.png")
 ```
 
-:::notes
+::: notes
 Explain that PCA that is a preprocessor / dimensionality reduction, used to decorrelate data
 :::
-
 
 ## What is wrong with this? {.annotation}
 
@@ -601,7 +596,6 @@ You can `extract_*()` several components of your fitted workflow.
 `roundint = FALSE` is only to quiet a warning
 :::
 
-
 ## Understand your model `r hexes("parsnip", "workflows")`
 
 How do you **understand** your new `tree_fit` model?
@@ -640,7 +634,7 @@ Learn more at <https://www.tmwr.org/explain.html>
 countdown::countdown(minutes = 5, id = "extract-methods")
 ```
 
-:::notes
+::: notes
 Afterward, ask what kind of object people got from the extraction, and what they did with it (e.g. give it to `summary()`, `plot()`, `broom::tidy()` ). Live code along
 :::
 
@@ -652,6 +646,6 @@ Afterward, ask what kind of object people got from the extraction, and what they
 knitr::include_graphics("images/whole-game-transparent-model-1.jpg")
 ```
 
-:::notes
+::: notes
 Stress that fitting a model on the entire training set was only for illustrating how to fit a model
 :::

@@ -103,7 +103,6 @@ augment(taxi_fit, new_data = taxi_train) %>%
 :::
 :::
 
-
 ## Metrics for model performance `r hexes("yardstick")`
 
 ::: columns
@@ -154,7 +153,7 @@ These metrics assume that we know the threshold for converting "soft" probabilit
 
 . . .
 
-Is a 50% threshold good? 
+Is a 50% threshold good?
 
 What happens if we say that we need to be 80% sure to declare an event?
 
@@ -189,20 +188,20 @@ augment(taxi_fit, new_data = taxi_train) %>%
 
 To make an ROC (receiver operator characteristic) curve, we:
 
-- calculate the sensitivity and specificity for all possible thresholds
+-   calculate the sensitivity and specificity for all possible thresholds
 
-- plot false positive rate (x-axis) versus true positive rate (y-axis)
+-   plot false positive rate (x-axis) versus true positive rate (y-axis)
 
 given that sensitivity is the true positive rate, and specificity is the true negative rate. Hence `1 - specificity` is the false positive rate.
 
 . . .
 
-We can use the area under the ROC curve as a classification metric: 
+We can use the area under the ROC curve as a classification metric:
 
-- ROC AUC = 1 💯 
-- ROC AUC = 1/2 😢
+-   ROC AUC = 1 💯
+-   ROC AUC = 1/2 😢
 
-:::notes
+::: notes
 ROC curves are insensitive to class imbalance.
 :::
 
@@ -314,12 +313,11 @@ taxi_fit %>%
 
 . . .
 
-⚠️ Remember that we're demonstrating overfitting 
+⚠️ Remember that we're demonstrating overfitting
 
 . . .
 
 ⚠️ Don't use the test set until the *end* of your modeling analysis
-
 
 ##  {background-image="https://media.giphy.com/media/55itGuoAJiZEEen9gg/giphy.gif" background-size="70%"}
 
@@ -508,8 +506,8 @@ taxi_res %>%
 ::: {.column width="50%"}
 The ROC AUC previously was
 
-- `r taxi_training_roc_auc` for the training set
-- `r taxi_testing_roc_auc` for test set
+-   `r taxi_training_roc_auc` for the training set
+-   `r taxi_testing_roc_auc` for test set
 :::
 :::
 
@@ -547,7 +545,7 @@ taxi_preds %>%
   taxi_metrics(truth = tip, estimate = .pred_class)
 ```
 
-## Where are the fitted models? `r hexes("tune")`  {.annotation}
+## Where are the fitted models? `r hexes("tune")` {.annotation}
 
 ```{r taxi-res}
 taxi_res
@@ -626,15 +624,15 @@ A validation set is just another type of resample
 
 ## Random forest 🌳🌲🌴🌵🌳🌳🌴🌲🌵🌴🌳🌵
 
-- Ensemble many decision tree models
+-   Ensemble many decision tree models
 
-- All the trees vote! 🗳️
+-   All the trees vote! 🗳️
 
-- Bootstrap aggregating + random predictor sampling
+-   Bootstrap aggregating + random predictor sampling
 
 . . .
 
-- Often works well without tuning hyperparameters (more on this in Advanced tidymodels!), as long as there are enough trees
+-   Often works well without tuning hyperparameters (more on this in Advanced tidymodels!), as long as there are enough trees
 
 ## Create a random forest model `r hexes("parsnip")`
 
@@ -684,7 +682,7 @@ collect_metrics(rf_res)
 knitr::include_graphics("images/whole-game-transparent-select.jpg")
 ```
 
-## The final fit `r hexes("tune")` 
+## The final fit `r hexes("tune")`
 
 Suppose that we are happy with our random forest model.
 

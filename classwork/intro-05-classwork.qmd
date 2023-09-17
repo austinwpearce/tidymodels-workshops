@@ -1,6 +1,7 @@
 ---
 title: "5 - Tuning models - Classwork"
 subtitle: "Introduction to tidymodels"
+author: Austin
 editor_options: 
   chunk_output_type: console
 ---
@@ -42,6 +43,8 @@ rf_res <- tune_grid(
   taxi_folds,
   grid = 5
 )
+
+autoplot(rf_res)
 ```
 
 ## Compare results
@@ -70,6 +73,31 @@ Modify your model workflow to tune one or more parameters.
 Use grid search to find the best parameter(s).
 
 ```{r}
-# Your code here!
+lr_spec <- logistic_reg(penalty = tune()) |> 
+  set_engine("glmnet")
 
+# Your code here!
+lr_workflow <- workflow() |> 
+  add_formula(tip ~ .) |> 
+  add_model(lr_spec)
+
+set.seed(22)
+lr_res <- tune_grid(
+  lr_workflow,
+  taxi_folds,
+  grid = 5
+)
+
+lr_res
+
+show_best(lr_res)
+
+best_parameter <- select_best(lr_res)
+best_parameter
+
+lf_wflow <- finalize_workflow(lr_workflow, best_parameter)
+
+final_fit <- last_fit(lf_wflow, taxi_split) 
+
+collect_metrics(final_fit)
 ```

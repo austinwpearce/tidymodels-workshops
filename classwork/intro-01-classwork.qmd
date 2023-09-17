@@ -1,6 +1,7 @@
 ---
 title: "1 - Introduction - Classwork"
 subtitle: "Introduction to tidymodels"
+author: Austin
 ---
 
 We recommend restarting R between each slide deck!
@@ -11,7 +12,8 @@ We recommend restarting R between each slide deck!
 
 ## Your turn
 
-How are statistics and machine learning related?
+How are statistics and machine learning related? How are they similar? Different?
 
-How are they similar? Different?
+-   Statistics is more about inference, assumptions of underlying data, and covering bias.
 
+-   Machine learning is more about improving outcomes, performance, forecasting.

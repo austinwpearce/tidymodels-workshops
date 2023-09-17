@@ -1,6 +1,7 @@
 ---
 title: "3 - What makes a model? - Classwork"
 subtitle: "Introduction to tidymodels"
+author: Austin
 editor_options: 
   chunk_output_type: console
 ---
@@ -56,9 +57,29 @@ tree_spec <- decision_tree() %>%
   set_mode("classification")
 
 tree_spec
+
+lr_spec <- logistic_reg()
 ```
 
+I would love to try and translate my knowledge today to critical soil test values.
+
 ## A model workflow
+
+Putting it in a data workflow helps prevent data leakage.
+
+-   Workflows handle new data better than base R tools in terms of new factor levels
+
+<!-- -->
+
+-   You can use other preprocessors besides formulas (more on feature engineering in Advanced tidymodels!)
+
+<!-- -->
+
+-   They can help organize your work when working with multiple models
+
+<!-- -->
+
+-   [Most importantly]{.underline}, a workflow captures the entire modeling process: `fit()` and `predict()` apply to the preprocessing steps in addition to the actual model fit
 
 ```{r}
 tree_spec <-
@@ -96,15 +117,13 @@ Edit the chunk below to make a workflow with your own model of choice!
 Extension/Challenge: Other than formulas, what kinds of preprocessors are supported?
 
 ```{r tree_wflow}
-tree_spec <-
-  decision_tree(cost_complexity = 0.002) %>% 
-  set_mode("classification")
+lr_spec <- logistic_reg()
 
-tree_wflow <- workflow() %>%
+lr_wflow <- workflow() %>%
   add_formula(tip ~ .) %>%
-  add_model(tree_spec)
+  add_model(lr_spec)
 
-tree_wflow
+lr_wflow
 ```
 
 ## Predict with your model
@@ -121,6 +140,14 @@ What do you get from running the following code? What do you notice about the st
 
 ```{r}
 predict(tree_fit, new_data = taxi_test)
+
+lr_fit <- lr_wflow |> 
+  fit(taxi_train)
+
+predict(lr_fit, new_data = taxi_test)
+
+## BUT DON'T DO THIS
+predict(lr_fit$fit)
 ```
 
 ## Your turn
@@ -129,6 +156,8 @@ What do you get from running the following code? How is `augment()` different fr
 
 ```{r}
 augment(tree_fit, new_data = taxi_test)
+
+augment(lr_fit, new_data = taxi_test)
 ```
 
 ## Understand your model
@@ -147,13 +176,15 @@ Try extracting the model engine object from your fitted workflow!
 
 ```{r}
 ### Your code here
+lr_fit
 
+lr_fit |> summary()
+
+extract_fit_engine(lr_fit) |> summary()
 ```
 
 What kind of object is it? What can you do with it?
 
 ⚠️ Never `predict()` with any extracted components!
 
-You can also read the documentation for object extraction:
-https://workflows.tidymodels.org/reference/extract-workflow.html
-
+You can also read the documentation for object extraction: https://workflows.tidymodels.org/reference/extract-workflow.html

@@ -12,12 +12,16 @@ We recommend restarting R between each slide deck!
 ```{r}
 library(tidymodels)
 
+theme_set(theme_minimal())
+
 taxi
 ```
 
 ## Your turn
 
 When is a good time to split your data?
+
+After tabulating data and selecting the variables. **Be careful** of doing exploratory data analysis (EDA) and looking at distributions, etc. before the split. This could be a potential instance of data leakage, which is that the information in the testing data leaks into the training data, thus influencing the model created around the training data.
 
 ## Data splitting and spending
 
@@ -37,6 +41,8 @@ taxi_test <- testing(taxi_split)
 
 ## Validation set
 
+Allows you to pull out data from what would have been training data and use it for validating your models while still protecting and keeping eyes off the precious testing dataset.
+
 ```{r}
 set.seed(123)
 initial_validation_split(taxi, prop = c(0.6, 0.2))
@@ -52,20 +58,57 @@ Hint: Which argument in `initial_split()` handles the proportion split into trai
 
 ```{r}
 # Your code here!
+set.seed(31415962) # fun fact: cannot be longer than 10 digits
 
+taxi_split <- initial_split(taxi, prop = 0.8)
+taxi_split
+
+taxi_train <- training(taxi_split)
+taxi_test <- testing(taxi_split)
+
+taxi_train
 ```
 
 ## Your turn
 
 Explore the `taxi_train` data on your own!
 
-- What's the distribution of the outcome, tip?
-- What's the distribution of numeric variables like distance?
-- How does tip differ across the categorical variables?
+-   What's the distribution of the outcome, tip?
+-   What's the distribution of numeric variables like distance?
+-   How does tip differ across the categorical variables?
 
 ```{r}
 # Your code here!
+skimr::skim(taxi_train)
 
+taxi_train |> 
+  mutate(tip_logistic = case_when(tip == "yes" ~ 1,
+                                  tip == "no" ~ 0)) |> 
+  ggplot(aes(x = distance, y = tip_logistic, color = tip)) +
+  geom_count() +
+  facet_wrap(vars(month))
+
+taxi_train |> 
+  mutate(tip_logistic = case_when(tip == "yes" ~ 1,
+                                  tip == "no" ~ 0)) |> 
+  ggplot(aes(x = hour, y = tip_logistic, color = tip)) +
+  geom_count() +
+  facet_wrap(vars(month))
+
+taxi_train |> 
+  ggplot(aes(x = dow, y = tip, color = tip)) +
+  geom_count() +
+  facet_wrap(vars(month))
+
+taxi_train |> 
+  ggplot(aes(x = hour, y = tip, color = tip)) +
+  geom_count() +
+  facet_wrap(vars(dow))
+
+taxi_train |> 
+  ggplot(aes(x = local, y = tip, color = tip)) +
+  geom_count() +
+  facet_wrap(vars(month))
 ```
 
 ## Stratification

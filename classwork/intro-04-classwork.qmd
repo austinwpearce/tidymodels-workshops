@@ -1,6 +1,7 @@
 ---
 title: "4 - Evaluating models - Classwork"
 subtitle: "Introduction to tidymodels"
+author: Austin
 editor_options: 
   chunk_output_type: console
 ---
@@ -48,6 +49,8 @@ augment(taxi_fit, new_data = taxi_train) %>%
   accuracy(truth = tip, estimate = .pred_class)
 ```
 
+Can this be used for CSTV?
+
 All yardstick metric functions work with grouped data frames!
 
 ```{r}
@@ -73,7 +76,25 @@ What data are being used for this ROC curve plot?
 
 ```{r}
 # Your code here!
+augment(taxi_fit, new_data = taxi_train) %>%
+  roc_curve(truth = tip, .pred_yes) |> 
+  autoplot()
 
+
+lr_spec <- logistic_reg()
+
+lr_wflow <- workflow() %>%
+  add_formula(tip ~ .) %>%
+  add_model(lr_spec)
+
+lr_wflow
+
+lr_fit <- lr_wflow |> 
+  fit(taxi_train)
+
+augment(lr_fit, new_data = taxi_train) %>%
+  roc_curve(truth = tip, .pred_yes) |> 
+  autoplot()
 ```
 
 ## Dangers of overfitting
@@ -81,8 +102,7 @@ What data are being used for this ROC curve plot?
 Repredicting the training set, bad!
 
 ```{r}
-taxi_fit %>%
-  augment(taxi_train)
+augment(x = taxi_fit, new_data = taxi_train)
 ```
 
 "Resubstitution estimate" - This should be the best possible performance that you could ever achieve, but it can be very misleading!
@@ -113,15 +133,17 @@ Notice the evidence of overfitting!
 # Your code here!
 
 # Use `augment()` and `brier_class()` with `taxi_fit`
-taxi_fit
+taxi_fit |> 
+  augment(taxi_train) |> 
+  brier_class(truth = tip, .pred_yes)
 ```
 
 ## Your turn
 
 If we use 10 folds, what percent of the training data:
 
-- ends up in analysis?
-- ends up in assessment?
+-   ends up in analysis?
+-   ends up in assessment?
 
 for each fold
 
@@ -160,6 +182,8 @@ taxi_folds
 ```{r}
 # Fit the workflow on each analysis set,
 # then compute performance on each assessment set
+taxi_wflow
+
 taxi_res <- fit_resamples(taxi_wflow, taxi_folds)
 taxi_res
 ```
@@ -181,6 +205,10 @@ taxi_res <- fit_resamples(taxi_wflow, taxi_folds, control = ctrl_taxi)
 
 taxi_preds <- collect_predictions(taxi_res)
 taxi_preds
+
+taxi_preds |>
+  group_by(id) |> 
+  taxi_metrics(truth = tip, estimate = .pred_class)
 ```
 
 ## Bootstrapping
@@ -194,8 +222,8 @@ bootstraps(taxi_train)
 
 Create:
 
-- Monte Carlo Cross-Validation sets
-- validation set
+-   Monte Carlo Cross-Validation sets
+-   validation set
 
 (use the reference guide to find the functions)
 
@@ -205,7 +233,13 @@ Don't forget to set a seed when you resample!
 
 ```{r}
 # Your code here!
+set.seed(3214)
 
+
+taxi_mc <- mc_cv(taxi_train)
+
+fit_resamples(taxi_wflow, taxi_mc) |> 
+  collect_metrics()
 ```
 
 ## Create a random forest model
@@ -216,7 +250,10 @@ rf_spec
 ```
 
 ```{r}
-rf_wflow <- workflow(tip ~ ., rf_spec)
+rf_wflow <- workflow() |> 
+  add_formula(tip ~ .) |> 
+  add_model(rf_spec)
+
 rf_wflow
 ```
 
@@ -224,12 +261,20 @@ rf_wflow
 
 Use `fit_resamples()` and `rf_wflow` to:
 
-- Keep predictions
-- Compute metrics
+-   Keep predictions
+-   Compute metrics
 
 ```{r}
 # Your code here!
+set.seed(3214)
+taxi_mc <- mc_cv(taxi_train)
 
+# BEWARE as 1000 bootstraps could take forever to run
+# set.seed(3214)
+# taxi_boot <- bootstraps(taxi_train)
+taxi_res <- fit_resamples(rf_wflow, taxi_mc)
+
+collect_metrics(taxi_res)
 ```
 
 ## Evaluate a workflow set
