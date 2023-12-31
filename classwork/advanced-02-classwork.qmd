@@ -1,6 +1,7 @@
 ---
 title: "2 - Feature Engineering - Classwork"
 subtitle: "Advanced tidymodels"
+author : "Austin"
 editor_options: 
   chunk_output_type: console
 ---
@@ -26,7 +27,7 @@ options(
 reg_metrics <- metric_set(mae, rsq)
 
 data(hotel_rates)
-set.seed(295)
+set.seed(911)
 hotel_rates <- 
   hotel_rates %>% 
   sample_n(5000) %>% 
@@ -38,7 +39,7 @@ hotel_rates <-
     agent = factor(as.character(agent))
   )
 
-set.seed(4028)
+set.seed(911)
 hotel_split <-
   initial_split(hotel_rates, strata = avg_price_per_room)
 
@@ -49,7 +50,7 @@ hotel_test <- testing(hotel_split)
 ## Resampling Strategy
 
 ```{r}
-set.seed(472)
+set.seed(911)
 hotel_rs <- vfold_cv(hotel_train, strata = avg_price_per_room)
 hotel_rs
 ```
@@ -69,10 +70,12 @@ What do you think are in the `type` vectors for the `lead_time` and `country` co
 
 ```{r}
 # Your code here!
-
+summary(hotel_rec) |> unnest(type)
 ```
 
 ## A base recipe
+
+Preprocess the data and get it ready for the modeling workflow.
 
 ```{r}
 hotel_rec <- 
@@ -123,17 +126,21 @@ hotel_rec <-
   step_spline_natural(arrival_date_num, deg_free = 10)
 ```
 
-## Your turn 
+## Your turn
 
 Create a `recipe()` for the hotel data to:
 
-- use a Yeo-Johnson (YJ) transformation on `lead_time`
-- convert factors to indicator variables
-- remove zero-variance variables
+-   use a Yeo-Johnson (YJ) transformation on `lead_time`
+-   convert factors to indicator variables
+-   remove zero-variance variables
 
 ```{r}
 # Your code here!
-
+hotel_train |> 
+  recipe(avg_price_per_room ~ .) |> 
+  step_YeoJohnson(lead_time) |>
+  step_dummy(all_factor_predictors()) |> # may be a problem because of agents (98!)
+  step_zv(all_predictors())
 ```
 
 ## Minimal recipe for the hotel data
@@ -147,17 +154,16 @@ hotel_indicators <-
   step_spline_natural(arrival_date_num, deg_free = 10)
 ```
 
-
 ## Measuring Performance
 
-We'll compute two measures, mean absolute error (MAE) and the coefficient of determination (a.k.a $R^2$), and focus on the MAE for parameter optimization. 
+We'll compute two measures, mean absolute error (MAE) and the coefficient of determination (a.k.a $R^2$), and focus on the MAE for parameter optimization.
 
 ```{r}
-reg_metrics <- metric_set(mae, rsq)
+reg_metrics <- metric_set(rsq, mae)
 ```
 
 ```{r}
-set.seed(9)
+set.seed(911)
 
 hotel_lm_wflow <-
   workflow() %>%
@@ -179,8 +185,19 @@ Use `fit_resamples()` to fit your workflow with a recipe.
 Collect the predictions from the results.
 
 ```{r}
-# Your code here!
+set.seed(911)
 
+# Your code here!
+hotel_lm_wflow <-
+  workflow() %>%
+  add_recipe(hotel_indicators) %>%
+  add_model(linear_reg())
+ 
+ctrl <- control_resamples(save_pred = TRUE)
+
+hotel_lm_res <-
+  hotel_lm_wflow %>%
+  fit_resamples(hotel_rs, control = ctrl, metrics = reg_metrics)
 ```
 
 ## Holdout predictions
@@ -191,7 +208,7 @@ lm_cv_pred <- collect_predictions(hotel_lm_res)
 lm_cv_pred %>% slice(1:7)
 ```
 
-## Calibration Plot 
+## Calibration Plot
 
 ```{r}
 library(probably)
@@ -199,9 +216,9 @@ library(probably)
 cal_plot_regression(hotel_lm_res, alpha = 1 / 5)
 ```
 
-## What do we do with the agent and company data? 
+## What do we do with the agent and company data?
 
-Collapsing factor levels: 
+Collapsing factor levels:
 
 ```{r}
 hotel_other_rec <-
@@ -238,6 +255,8 @@ hash_rec <-
   step_dummy(all_nominal_predictors()) %>% 
   step_zv(all_predictors()) %>% 
   step_spline_natural(arrival_date_num, deg_free = 10)
+
+tidy(prep(hash_rec), 1)
 
 hotel_hash_wflow <-
   hotel_lm_wflow %>%

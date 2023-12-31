@@ -1,6 +1,7 @@
 ---
 title: "1 - Feature Engineering - Classwork"
 subtitle: "Advanced tidymodels"
+author: Austin
 editor_options: 
   chunk_output_type: console
 ---
@@ -21,7 +22,7 @@ options(
 )
 
 data(hotel_rates)
-set.seed(295)
+set.seed(911)
 hotel_rates <- 
   hotel_rates %>% 
   sample_n(5000) %>% 
@@ -47,11 +48,28 @@ hotel_test <- testing(hotel_split)
 
 ## Your turn
 
-Let's take some time and investigate the _training data_. The outcome is `avg_price_per_room`. 
+Let's take some time and investigate the *training data*. The outcome is `avg_price_per_room`.
 
 Are there any interesting characteristics of the data?
 
 ```{r}
 # Your code here!
+View(hotel_train)
 
+skimr::skim(hotel_train)
+
+hotel_train |> 
+  ggplot(aes(avg_price_per_room, color = )) +
+  geom_histogram() +
+  scale_x_log10()
+
+hotel_train |> 
+  ggplot(aes(arrival_date_num, avg_price_per_room)) +
+  geom_point(alpha = 0.2) +
+  stat_smooth()
+
+hotel_train |> 
+  ggplot(aes(company, avg_price_per_room)) +
+  geom_boxplot() +
+  facet_wrap(vars(market_segment))
 ```

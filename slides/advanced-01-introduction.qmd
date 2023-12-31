@@ -28,7 +28,6 @@ Welcome!
 
 ::: columns
 ::: {.column width="50%"}
-
 <center>
 
 ### <i class="fa fa-wifi"></i>
@@ -38,11 +37,9 @@ Wi-Fi network name
 `Posit Conf 2023`
 
 </center>
-
 :::
 
 ::: {.column width="50%"}
-
 <center>
 
 ### <i class="fa fa-key"></i>
@@ -52,7 +49,6 @@ Wi-Fi password
 `conf2023`
 
 </center>
-
 :::
 :::
 
@@ -66,7 +62,7 @@ Wi-Fi password
 
 -   A lactation room is located in Grand Suite 1
 
--   The meditation/prayer and lactation rooms are open  
+-   The meditation/prayer and lactation rooms are open\
     Sun - Tue 7:30am - 7:00pm, Wed 8:00am - 6:00pm
 
 ## Workshop policies
@@ -86,8 +82,8 @@ Wi-Fi password
 -   You do **not** need intermediate or expert familiarity with modeling or ML
 
 -   You have used some tidymodels packages
- 
--   You have some experience with evaluating statistical models using resampling techniques 
+
+-   You have some experience with evaluating statistical models using resampling techniques
 
 ## Who are tidymodels?
 
@@ -114,21 +110,20 @@ Many thanks to Davis Vaughan, Julia Silge, David Robinson, Julie Jung, Alison Hi
 
 🟩 "I finished the exercise"
 
-
 ## `r emo::ji("eyes")` {.annotation}
 
 ![](images/pointing.svg){.absolute top="0" right="0"}
 
 ## Tentative plan for this workshop
 
-- Feature engineering with recipes
-- Model optimization by tuning
-  - Grid search
-  - Racing
-  - Iterative methods
-- Extras (time permitting)
-  - Effect encodings
-  - A case study
+-   Feature engineering with recipes
+-   Model optimization by tuning
+    -   Grid search
+    -   Racing
+    -   Iterative methods
+-   Extras (time permitting)
+    -   Effect encodings
+    -   A case study
 
 ##  {.center}
 
@@ -167,14 +162,12 @@ Link in our Discord channel!
 
 ## Hotel Data `r hexes("tidymodels", "dplyr")`
 
-We'll use [data on hotels](https://www.sciencedirect.com/science/article/pii/S2352340918315191) to predict the cost of a room. 
+We'll use [data on hotels](https://www.sciencedirect.com/science/article/pii/S2352340918315191) to predict the cost of a room.
 
-The [data](https://modeldata.tidymodels.org/reference/hotel_rates.html) are in the modeldata package. We'll sample down the data and refactor some columns: 
+The [data](https://modeldata.tidymodels.org/reference/hotel_rates.html) are in the modeldata package. We'll sample down the data and refactor some columns:
 
-:::: {.columns}
-
+::: columns
 ::: {.column width="40%"}
-
 ```{r}
 #| label: tune-startup
 library(tidymodels)
@@ -187,11 +180,9 @@ options(
   pillar.min_title_chars = Inf
 )
 ```
-
 :::
 
 ::: {.column width="60%"}
-
 ```{r}
 #| label: data-import
 data(hotel_rates)
@@ -207,11 +198,8 @@ hotel_rates <-
     agent = factor(as.character(agent))
   )
 ```
-
-
 :::
-
-::::
+:::
 
 ## Hotel date columns
 
@@ -220,7 +208,6 @@ hotel_rates <-
 
 names(hotel_rates)
 ```
-
 
 ## Data splitting strategy
 
@@ -232,7 +219,6 @@ names(hotel_rates)
 
 knitr::include_graphics("images/initial-split.svg")
 ```
-
 
 ## Data Spending `r hexes("rsample")`
 
@@ -247,11 +233,9 @@ hotel_train <- training(hotel_split)
 hotel_test <- testing(hotel_split)
 ```
 
-
-
 ## Your turn {transition="slide-in"}
 
-Let's take some time and investigate the _training data_. The outcome is `avg_price_per_room`. 
+Let's take some time and investigate the *training data*. The outcome is `avg_price_per_room`.
 
 Are there any interesting characteristics of the data?
 
@@ -335,4 +319,3 @@ knitr::kable(column4)
 ```
 :::
 :::
-

@@ -73,6 +73,10 @@ lgbm_param <-
 ## Racing 
 
 ```{r } 
+cores <- parallelly::availableCores(logical = FALSE)
+cl <- parallel::makePSOCKcluster(cores)
+doParallel::registerDoParallel(cl)
+
 # Let's use a larger grid
 set.seed(8945)
 lgbm_grid <- 
@@ -92,7 +96,8 @@ lgbm_race_res <-
 ```
 
 ```{r}
-show_best(lgbm_race_res, metric = "mae")
+lgbm_best <- select_best(lgbm_race_res, metric = "mae")
+lgbm_best
 ```
 
 ```{r}
@@ -109,5 +114,17 @@ Did you get the same or similar results?
 
 ```{r}
 # Your code here!
+set.seed(314159)
+lgbm_race_res_2 <-
+  lgbm_wflow %>%
+  tune_race_anova(
+    resamples = hotel_rs,
+    grid = lgbm_grid, 
+    metrics = reg_metrics
+  )
 
+lgbm_best_2 <- select_best(lgbm_race_res_2, metric = "mae")
+
+lgbm_best
+lgbm_best_2
 ```

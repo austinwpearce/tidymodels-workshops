@@ -142,9 +142,10 @@ Let's take our previous model and tune more parameters:
 lgbm_spec <- 
   boost_tree(trees = tune(), learn_rate = tune(),  min_n = tune()) %>% 
   set_mode("regression") %>% 
-  set_engine("lightgbm", num_threads = 1)
+  set_engine("lightgbm", num_threads = 4)
 
-lgbm_wflow <- workflow(hash_rec, lgbm_spec)
+lgbm_wflow <- workflow(preprocessor = hash_rec,
+                       spec = lgbm_spec)
 
 # Update the feature hash ranges (log-2 units)
 lgbm_param <-
@@ -164,7 +165,7 @@ lgbm_res <-
   lgbm_wflow %>%
   tune_grid(
     resamples = hotel_rs,
-    grid = 25,
+    grid = 5,
     # The options below are not required by default
     param_info = lgbm_param, 
     control = ctrl,

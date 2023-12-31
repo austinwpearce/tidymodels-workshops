@@ -91,6 +91,10 @@ exerc_data %>%
 ## An Initial Grid
 
 ```{r} 
+cores <- parallelly::availableCores(logical = FALSE)
+cl <- parallel::makePSOCKcluster(cores)
+doParallel::registerDoParallel(cl)
+
 reg_metrics <- metric_set(mae, rsq)
 
 set.seed(12)
